@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"simple-library-api/internal/database"
+	"simple-library-api/internal/handlers"
+	"simple-library-api/internal/repository"
+	"simple-library-api/internal/server"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -29,22 +31,25 @@ func main() {
 	}
 	defer db.Close()
 
+	// Run migrations
+	if err := database.Migrate(db); err != nil {
+		log.Fatal(err)
+	}
+
 	// Test database connection
 	if err := db.Ping(); err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
 	fmt.Println("Connected to MySQL database!")
 
-	// Set up router
-	r := mux.NewRouter()
+	//	init layers (dependency injection)
+	bookRepo := repository.NewBookRepository(db)
+	bookHandler := handlers.NewBookHandler(bookRepo)
 
-	// Example health check endpoint
-	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
+	server := server.NewServer("127.0.0.1:8080", bookHandler)
 
-	// Start HTTP server
-	fmt.Println("Server running on: 127.0.0.1:8080")
-	log.Fatal(http.ListenAndServe("127.0.0.1:8080", r))
+	fmt.Println("Server is running on port 8080")
+	if err := server.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
