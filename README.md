@@ -15,7 +15,7 @@ This project demonstrates **Standard Go Project Layout** and modern **Best Pract
 ## 🏃🏻Run the Project
 
 To run the project, simply run the following commands:
-### 1. Download/Sync all dependencies (Cleaner than 'go get .')
+### 1. Download/Sync all dependencies
 `go mod tidy`
 
 ### 2. Run the main file from the root
