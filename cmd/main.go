@@ -1,31 +1,41 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
-	"os"
+	"simple-library-api/internal/config"
 	"simple-library-api/internal/database"
 	"simple-library-api/internal/handlers"
 	"simple-library-api/internal/repository"
 	"simple-library-api/internal/server"
 
-	"github.com/go-sql-driver/mysql"
+	_ "simple-library-api/docs"
 )
+
+// @title Simple Library API
+// @version 1.0
+// @description A sample API to manage books in a library
+// @termsOfService http://swagger.io/terms
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host http://127.0.0.1:8080
+// @BasePath /
 
 func main() {
 	// Configure MySQL Connection
-	cfg := mysql.Config{
-		User:                 os.Getenv("DBUSER"),
-		Passwd:               os.Getenv("DBPASS"),
-		Net:                  "tcp",
-		Addr:                 "localhost:3306",
-		DBName:               "library_api_go",
-		AllowNativePasswords: true,
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal("Failed to load config:", err)
 	}
 
 	// Open database connection
-	db, err := sql.Open("mysql", cfg.FormatDSN())
+	db, err := database.NewMySQLDB(cfg.DSN)
 	if err != nil {
 		log.Fatalf("Error opening db connection: %v", err)
 	}

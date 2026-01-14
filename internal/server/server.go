@@ -3,6 +3,10 @@ package server
 import (
 	"net/http"
 	"simple-library-api/internal/handlers"
+
+	_ "simple-library-api/docs"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Server struct {
@@ -25,6 +29,7 @@ func (s *Server) Run() error {
 	mux.HandleFunc("POST /books/create", s.bookHandler.CreateBook)
 	mux.HandleFunc("PUT /books/{id}/update", s.bookHandler.UpdateBook)
 	mux.HandleFunc("DELETE /books/{id}/delete", s.bookHandler.DeleteBook)
+	mux.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
 	server := &http.Server{
 		Addr:    s.addr,

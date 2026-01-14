@@ -1,0 +1,149 @@
+basePath: /
+definitions:
+  model.Book:
+    properties:
+      author:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      year:
+        type: integer
+    type: object
+host: http://127.0.0.1:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A sample API to manage books in a library
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms
+  title: Simple Library API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all books stored in the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Book'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Add a new book to the library
+      parameters:
+      - description: Book JSON
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/model.Book'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Book'
+        "400":
+          description: Invalid body
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Remove a book from the library by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: Book not found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a book
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: Update details of an existing book by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Book JSON
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/model.Book'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid ID or Body
+          schema:
+            type: string
+        "404":
+          description: Book not found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a book
+      tags:
+      - books
+swagger: "2.0"

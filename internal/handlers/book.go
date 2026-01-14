@@ -17,6 +17,17 @@ func NewBookHandler(repo *repository.BookRepository) *BookHandler {
 	return &BookHandler{Repo: repo}
 }
 
+// CreateBook godoc
+// @Summary      Create a new book
+// @Description  Add a new book to the library
+// @Tags         books
+// @Accept       json
+// @Produce      json
+// @Param        book  body      model.Book  true  "Book JSON"
+// @Success      201   {object}  model.Book
+// @Failure      400   {string}  string "Invalid body"
+// @Failure      500   {string}  string "Internal Server Error"
+// @Router       /books [post]
 func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
@@ -39,6 +50,15 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(book)
 }
 
+// GetBooks godoc
+// @Summary      Get all books
+// @Description  Get a list of all books stored in the database
+// @Tags         books
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}   model.Book
+// @Failure      500  {string}  string "Internal Server Error"
+// @Router       /books [get]
 func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
@@ -55,6 +75,19 @@ func (h *BookHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(books)
 }
 
+// UpdateBook godoc
+// @Summary      Update a book
+// @Description  Update details of an existing book by ID
+// @Tags         books
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int         true  "Book ID"
+// @Param        book  body      model.Book  true  "Updated Book JSON"
+// @Success      200   {object}  map[string]string
+// @Failure      400   {string}  string "Invalid ID or Body"
+// @Failure      404   {string}  string "Book not found"
+// @Failure      500   {string}  string "Internal Server Error"
+// @Router       /books/{id} [put]
 func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
@@ -94,6 +127,17 @@ func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Book updated successfully!"})
 }
 
+// DeleteBook godoc
+// @Summary      Delete a book
+// @Description  Remove a book from the library by ID
+// @Tags         books
+// @Produce      json
+// @Param        id   path      int  true  "Book ID"
+// @Success      200  {string}  string "Book deleted successfully"
+// @Failure      400  {string}  string "Invalid ID"
+// @Failure      404  {string}  string "Book not found"
+// @Failure      500  {string}  string "Internal Server Error"
+// @Router       /books/{id} [delete]
 func (h *BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
